@@ -65,5 +65,4 @@ async function demo() {
   }
 }
 
-await demo();
   
