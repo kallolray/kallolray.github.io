@@ -8,7 +8,7 @@ if ("serviceWorker" in navigator) {
   }
 
 async function demo() {
-  const db = await openDB('Articles', 1, {
+  const db = await idb.openDB('Articles', 1, {
     upgrade(db) {
       // Create a store of objects
       const store = db.createObjectStore('articles', {
