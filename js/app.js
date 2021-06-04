@@ -65,5 +65,5 @@ async function demo() {
   }
 }
 
-demo();
+await demo();
   
