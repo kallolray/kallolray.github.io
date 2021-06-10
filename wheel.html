@@ -169,7 +169,7 @@
 			return (h ^= h >>> 16) >>> 0;
 		}
 	}
-	var seed = xmur3("apples");
+	var seed = xmur3(new Date().toLocaleString('us-en'));
 	var rand2 = mulberry32(seed());
 
   </script>   
