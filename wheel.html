@@ -32,145 +32,145 @@
 <button onClick="start()">Start</button>
 </div>
   <script type="application/javascript">
-var ctx, canvas;
-var rgbRanges = [[180,255,0,150,0,150],[0,150,180,255,0,150],[0,150,0,150,180,255]];
-var fontSize=30;
-var colors = [];
-var label = [];
-var sliceAngs = [];
-var slices ;
-var sliceDeg;
-var startDeg = 0;
-var width; 	// size
-var center;      // center
-var nbrRotation = 0;
-var tbStatus;
-var deg_sec = 360*1;
-var selected;
-var availableList = [];
+	var ctx, canvas;
+	var rgbRanges = [[180,255,0,150,0,150],[0,150,180,255,0,150],[0,150,0,150,180,255]];
+	var fontSize=30;
+	var colors = [];
+	var label = [];
+	var sliceAngs = [];
+	var slices ;
+	var sliceDeg;
+	var startDeg = 0;
+	var width; 	// size
+	var center;      // center
+	var nbrRotation = 0;
+	var tbStatus;
+	var deg_sec = 360*1;
+	var selected;
+	var availableList = [];
 
-function rand(min, max) {
-  return Math.floor(rand2() * (max - min)) + min;
-}
-function deg2rad(deg){ return deg * Math.PI/180; }
+	function rand(min, max) {
+	return Math.floor(rand2() * (max - min)) + min;
+	}
+	function deg2rad(deg){ return deg * Math.PI/180; }
 
-function getColor(index){
-	const rgb = rgbRanges[index % 3];
-	return `rgb(${rand(rgb[0],rgb[1])}, ${rand(rgb[2],rgb[3])}, ${rand(rgb[4],rgb[5])})`;
-}
+	function getColor(index){
+		const rgb = rgbRanges[index % 3];
+		return `rgb(${rand(rgb[0],rgb[1])}, ${rand(rgb[2],rgb[3])}, ${rand(rgb[4],rgb[5])})`;
+	}
 
-function drawSlice(index){
-  var startAng =  sliceAngs[index];
-  
-  //console.log(index,startAng);
-  ctx.beginPath();
-  ctx.fillStyle = colors[index];
-  ctx.moveTo(center, center);
-  ctx.arc(center, center, center, deg2rad(startAng), deg2rad(startAng+sliceDeg), false);
-  ctx.lineTo(center, center);
-  ctx.closePath();
-  ctx.fill();
-  return startAng+sliceDeg/2;
-}
-
-function drawText(index, textDeg) {
-  ctx.save();
-  ctx.translate(center, center);
-  ctx.rotate(deg2rad(textDeg));
-  ctx.textAlign = "right";
-  ctx.fillStyle = availableList.includes(index)? "black" : 'white';
-  ctx.font = fontSize + 'px serif';
-  ctx.fillText(label[index], center*0.9, fontSize/2);
-  ctx.restore();
-}
-
-function centerCircle(){
+	function drawSlice(index){
+	var startAng =  sliceAngs[index];
+	
+	//console.log(index,startAng);
 	ctx.beginPath();
-	ctx.fillStyle = 'white';
+	ctx.fillStyle = colors[index];
 	ctx.moveTo(center, center);
-	ctx.arc(center, center, center/4, deg2rad(0), deg2rad(360), false);
+	ctx.arc(center, center, center, deg2rad(startAng), deg2rad(startAng+sliceDeg), false);
+	ctx.lineTo(center, center);
+	ctx.closePath();
 	ctx.fill();
-}
+	return startAng+sliceDeg/2;
+	}
 
-    function init() {
-      canvas = document.getElementById('canvas');
-      tbStatus = document.getElementById('status');
-      if (canvas.getContext) {
-        ctx = canvas.getContext('2d');
-	width = document.getElementById('canvas').width; // size
-	center = width/2;      // center
-	
-	label = [];
-	for(i=0; i<20; ++i){
-		label.push(`Name ${i}`);
-		availableList.push(i);
+	function drawText(index, textDeg) {
+	ctx.save();
+	ctx.translate(center, center);
+	ctx.rotate(deg2rad(textDeg));
+	ctx.textAlign = "right";
+	ctx.fillStyle = availableList.includes(index)? "black" : 'white';
+	ctx.font = fontSize + 'px serif';
+	ctx.fillText(label[index], center*0.9, fontSize/2);
+	ctx.restore();
 	}
-	slices = label.length;
-	sliceDeg = 360/slices;
-	startDeg = 0;
-	//wheelSpeed = 3 ;//sliceDeg/20;
-	
-	sliceAngs = [];
-	colors = [];
-	for(let i=0; i < slices; ++i){
-		colors.push(getColor(i));
-		sliceAngs.push(startDeg + i * sliceDeg);
+
+	function centerCircle(){
+		ctx.beginPath();
+		ctx.fillStyle = 'white';
+		ctx.moveTo(center, center);
+		ctx.arc(center, center, center/4, deg2rad(0), deg2rad(360), false);
+		ctx.fill();
 	}
-	draw();
-	nbrRotation = 0;
-	canvas.onclick = start;
-	canvas.ontransitionend = ()=>{
-		canvas.style.transition = 'none';
+
+		function init() {
+		canvas = document.getElementById('canvas');
+		tbStatus = document.getElementById('status');
+		if (canvas.getContext) {
+			ctx = canvas.getContext('2d');
+		width = document.getElementById('canvas').width; // size
+		center = width/2;      // center
+		
+		label = [];
+		for(i=0; i<20; ++i){
+			label.push(`Name ${i}`);
+			availableList.push(i);
+		}
+		slices = label.length;
+		sliceDeg = 360/slices;
+		startDeg = 0;
+		//wheelSpeed = 3 ;//sliceDeg/20;
+		
+		sliceAngs = [];
+		colors = [];
+		for(let i=0; i < slices; ++i){
+			colors.push(getColor(i));
+			sliceAngs.push(startDeg + i * sliceDeg);
+		}
+		draw();
+		nbrRotation = 0;
+		canvas.onclick = start;
+		canvas.ontransitionend = ()=>{
+			canvas.style.transition = 'none';
+			canvas.style.transform = `rotate(${nbrRotation}deg)`;
+			drawText(selected, sliceAngs[selected]+sliceDeg/2);
+		}
+		}
+	}
+
+	function draw(){
+		ctx.clearRect(0, 0, width, width);
+		for(let i=0; i<slices; ++i){
+			drawText(i, drawSlice(i));
+		}
+		centerCircle();
+	}
+
+	function start() {
+		var pre_selected = availableList[rand(0,availableList.length)];
+		nbrRotation = rand(3, 7) * 360 + (360-sliceAngs[pre_selected]-sliceDeg/2);
+
+		nbrRotation = Math.round(nbrRotation/5,0)* 5;
+		const sec = Math.ceil(nbrRotation / deg_sec);
+		
+		canvas.style.transition = `all ${sec}s cubic-bezier(0,.99,.44,.99)`;
 		canvas.style.transform = `rotate(${nbrRotation}deg)`;
-		drawText(selected, sliceAngs[selected]+sliceDeg/2);
+		nbrRotation %= 360;
+		selected = sliceAngs.map((x,i)=>[i,(x+nbrRotation)%360]).sort((a,b)=> b[1]-a[1])[0][0];
+		availableList = availableList.filter(item => item != selected)
+		console.log('Pre-Selected: ',pre_selected, 'Selected', selected);
 	}
-    }
-}
 
-function draw(){
-	ctx.clearRect(0, 0, width, width);
-	for(let i=0; i<slices; ++i){
-	    drawText(i, drawSlice(i));
+	function mulberry32(a) {
+		return function() {
+		var t = a += 0x6D2B79F5;
+		t = Math.imul(t ^ t >>> 15, t | 1);
+		t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+		return ((t ^ t >>> 14) >>> 0) / 4294967296;
+		}
 	}
-	centerCircle();
-}
 
-function start() {
-	var pre_selected = availableList[rand(0,availableList.length)];
-	nbrRotation = rand(3, 7) * 360 + (360-sliceAngs[pre_selected]-sliceDeg/2);
-
-	nbrRotation = Math.round(nbrRotation/5,0)* 5;
-	const sec = Math.ceil(nbrRotation / deg_sec);
-	
-	canvas.style.transition = `all ${sec}s cubic-bezier(0,.99,.44,.99)`;
-	canvas.style.transform = `rotate(${nbrRotation}deg)`;
-	nbrRotation %= 360;
-	selected = sliceAngs.map((x,i)=>[i,(x+nbrRotation)%360]).sort((a,b)=> b[1]-a[1])[0][0];
-	availableList = availableList.filter(item => item != selected)
-	console.log('Pre-Selected: ',pre_selected, 'Selected', selected);
-}
-
-function mulberry32(a) {
-    return function() {
-      var t = a += 0x6D2B79F5;
-      t = Math.imul(t ^ t >>> 15, t | 1);
-      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-      return ((t ^ t >>> 14) >>> 0) / 4294967296;
-    }
-}
-
-function xmur3(str) {
-    for(var i = 0, h = 1779033703 ^ str.length; i < str.length; i++)
-        h = Math.imul(h ^ str.charCodeAt(i), 3432918353),
-        h = h << 13 | h >>> 19;
-    return function() {
-        h = Math.imul(h ^ h >>> 16, 2246822507);
-        h = Math.imul(h ^ h >>> 13, 3266489909);
-        return (h ^= h >>> 16) >>> 0;
-    }
-}
-var seed = xmur3("apples");
-var rand2 = mulberry32(seed());
+	function xmur3(str) {
+		for(var i = 0, h = 1779033703 ^ str.length; i < str.length; i++)
+			h = Math.imul(h ^ str.charCodeAt(i), 3432918353),
+			h = h << 13 | h >>> 19;
+		return function() {
+			h = Math.imul(h ^ h >>> 16, 2246822507);
+			h = Math.imul(h ^ h >>> 13, 3266489909);
+			return (h ^= h >>> 16) >>> 0;
+		}
+	}
+	var seed = xmur3("apples");
+	var rand2 = mulberry32(seed());
 
   </script>   
  </body>
