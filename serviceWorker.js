@@ -4,7 +4,10 @@ const assets = [
   "/index.html",
   "/css/style.css",
   "/js/app.js",
-  "/image"
+  "/images/favicon-32x32.png",
+  "/images/favicon-16x16.png",
+  "images/apple-touch-icon-60x60.png",
+  "images/apple-touch-icon.png"
 ];
 
 self.addEventListener("install", installEvent => {
