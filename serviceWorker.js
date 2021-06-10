@@ -1,4 +1,4 @@
-const staticDev = "dev-WheelSpin-site-v1";
+const staticDev = "dev-WheelSpin-site-20210610 9:19p";
 const assets = [
   "/",
   "/wheel.html",
