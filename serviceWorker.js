@@ -1,5 +1,6 @@
 const staticDev = "dev-WheelSpin-site-v1";
 const assets = [
+  "/",
   "/wheel.html",
   "/index.html",
   "/css/style.css",
